@@ -16,7 +16,7 @@ class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
     //отели
     var hostel:TextView? = null
-    var rate:TextView? = null
+    var rate:hyogeun.github.com.colorratingbarlib.ColorRatingBar? = null
     var about:TextView? = null
     var hostelItem:CardView? = null
 

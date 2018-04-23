@@ -50,6 +50,11 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
                 .findItem(R.id.app_bar_switch)
                 .actionView
                 .findViewById(R.id.switch_button) as SwitchCompat
+
+        if(viewState.currentViewState == ListViewState.SHOW_LIST_HOSTEL){
+            listSwitch.isChecked = true
+        }
+
         listSwitch.setOnCheckedChangeListener(this)
         return true
     }
@@ -108,6 +113,7 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     }
 
     override fun onNewViewStateInstance() {
+        setTitleCity("Moscow")
         refreshData(0)
     }
 

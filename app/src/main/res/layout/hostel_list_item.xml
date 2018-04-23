@@ -37,15 +37,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <hyogeun.github.com.colorratingbarlib.ColorRatingBar
                 android:id="@+id/rate_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textSize="12sp"
+                android:rating="3"
+                app:changeable="false"
+                app:empty_color="#00ffffff"
+                app:progress_color="#f0f000"
                 app:layout_constraintStart_toStartOf="@+id/hostel_text"
-                app:layout_constraintTop_toBottomOf="@+id/hostel_text"
-                tools:text="City" />
+                app:layout_constraintTop_toBottomOf="@+id/hostel_text"/>
 
             <TextView
                 android:id="@+id/about_text"

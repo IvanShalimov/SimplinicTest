@@ -49,7 +49,7 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
         } else {
             val item =  list[position] as Hostel
             holder.hostel?.text = item.getLabel()
-            holder.rate?.text = "${item.getRate()}"
+            holder.rate?.rating =  item.getRate()!!.toFloat()
             holder.about?.text =""
         }
     }
@@ -59,6 +59,7 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
         list = parameter as ArrayList<Any>
         changeData(type)
     }
+
     private fun changeData(type:Int){
         if (type == CITIES){
             typListData = CITIES
