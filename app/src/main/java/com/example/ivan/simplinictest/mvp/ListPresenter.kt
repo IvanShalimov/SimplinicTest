@@ -37,7 +37,7 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
        view?.setData(response,returnType)
     }
 
-    fun loadData(cash:Boolean,force:Boolean){
+    fun loadCity(cash:Boolean){
         view.lockScreen(true)
         cityLoad = true
         subscription = repository?.getListCity(cash)
@@ -48,7 +48,7 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
                 })
     }
 
-    fun loadData(cash:Boolean,stub:Int,force:Boolean){
+    fun loadHostel(cash:Boolean){
         view.lockScreen(true)
         hostelLoad = true
         subscription = repository?.getListHostel(cash,selectedCity)

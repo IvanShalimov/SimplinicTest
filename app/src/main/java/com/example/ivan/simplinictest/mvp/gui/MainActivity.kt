@@ -27,7 +27,7 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     }
 
     private lateinit var adapter: ListAdapter
-    lateinit var listSwitch:SwitchCompat
+    private lateinit var listSwitch:SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,9 +63,9 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         return when (item.itemId) {
             R.id.action_settings -> {
                 if(viewState.currentViewState == 1){
-                    refreshData(0,true)
+                    refreshData(0,false)
                 } else if(viewState.currentViewState == 2){
-                    refreshData(1,true)
+                    refreshData(1,false)
                 }
                 true
             }
@@ -86,11 +86,11 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         if(isChecked){
             //hotels
             viewState.currentViewState = ListViewState.SHOW_LIST_HOSTEL
-            refreshData(1,true)//presenter.loadData(false,0)
+            refreshData(1,true)
         } else {
             //cities
             viewState.currentViewState = ListViewState.SHOW_LIST_CITIES
-            refreshData(0,true)//presenter.loadData(false)
+            refreshData(0,true)
         }
     }
 
@@ -125,13 +125,12 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         return ListViewState()
     }
 
-    override fun refreshData(flag:Int,forceCash:Boolean) {
+    override fun refreshData(flag:Int,cache:Boolean) {
         if(flag == 0){
-            presenter.loadData(forceCash,true)
+            presenter.loadCity(cache)
         } else if(flag == 1){
-            presenter.loadData(forceCash,0,true)
+            presenter.loadHostel(cache)
         }
-
     }
 
     override fun onDestroy() {

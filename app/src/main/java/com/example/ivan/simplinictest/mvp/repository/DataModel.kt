@@ -12,23 +12,44 @@ class DataModel(context: Context) {
     val repository: CacheRepository = CacheRepository(cache)
     private val repositoryNetwork:NetworkRepository = NetworkRepository()
 
-    fun getListCity(offline:Boolean,force:Boolean):Observable<List<City>> {
-        return if(offline){
-            repository.getListCity()
+    fun getListCity(cacheFlag:Boolean):Observable<List<City>> {
+        return if(cacheFlag){
+            repository
+                    .getListCity().concatMap {
+                        if (it.isEmpty())
+                             repositoryNetwork
+                                     .getListCity()
+                                     .map {
+                                            cache.saveCities(it,!cacheFlag)
+                                        it
+                                     }
+                        else
+                            Observable.just(it)
+                    }
+
         }else{
             repositoryNetwork.getListCity().map {
-                cache.saveCities(it,force)
+                cache.saveCities(it,!cacheFlag)
                 it
             }
         }
     }
 
-    fun getListHostel(offline:Boolean,city: Int?,force:Boolean):Observable<List<Hostel>>{
-        return if(offline){
-            repository.getListHostel(city)
+    fun getListHostel(cacheFlag:Boolean,city: Int?):Observable<List<Hostel>>{
+        return if(cacheFlag){
+            repository.getListHostel(city).concatMap {
+                if(it.isEmpty())
+                    repositoryNetwork
+                            .getListHostel(city)
+                            .map{
+                             cache.saveHostels(it,!cacheFlag)
+                            it
+                }
+                else Observable.just(it)
+            }
         }else{
             repositoryNetwork.getListHostel(city).map {
-                cache.saveHostels(it,force)
+                cache.saveHostels(it,cacheFlag)
                 it
             }
         }
