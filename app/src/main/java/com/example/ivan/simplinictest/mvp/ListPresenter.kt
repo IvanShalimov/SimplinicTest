@@ -1,6 +1,7 @@
 package com.example.ivan.simplinictest.mvp
 
 import android.content.Context
+import android.util.Log
 import com.example.ivan.simplinictest.mvp.gui.ListAdapter
 import com.example.ivan.simplinictest.mvp.gui.ListView
 import com.example.ivan.simplinictest.mvp.repository.DataModel
@@ -11,8 +12,11 @@ import rx.schedulers.Schedulers
 
 class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
     var repository:DataModel? = null
+
     var cityLoad = false
     var hostelLoad = false
+    var allHostelLoad = false;
+
     var subscription:Subscription? = null
     var selectedCity:Int? = 2
 
@@ -31,6 +35,11 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
        if(hostelLoad){
            returnType = ListAdapter.HOSTEL
            hostelLoad = false
+       }
+
+       if(allHostelLoad){
+           returnType = 3
+           allHostelLoad = false
        }
 
        view.lockScreen(false)
@@ -52,6 +61,18 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
         view.lockScreen(true)
         hostelLoad = true
         subscription = repository?.getListHostel(cash,selectedCity)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe({
+                    onSuccess(it)
+                })
+    }
+
+    fun loadAllHostel(cash:Boolean){
+        Log.d("Test","loadAllHostel")
+        view.lockScreen(true)
+        allHostelLoad = true
+        subscription = repository?.getListHostel(cash)
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe({

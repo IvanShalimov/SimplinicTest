@@ -23,4 +23,13 @@ class CacheRepository(private val cache: Cache) : Repository {
 
         return Observable.create(onSubscribe)
     }
+
+    override fun getListHostel(): Observable<List<Hostel>> {
+        val onSubscribe = Observable.OnSubscribe<List<Hostel>> { subscriber ->
+            subscriber.onNext(cache.getHostels())
+            subscriber.onCompleted()
+        }
+
+        return Observable.create(onSubscribe)
+    }
 }

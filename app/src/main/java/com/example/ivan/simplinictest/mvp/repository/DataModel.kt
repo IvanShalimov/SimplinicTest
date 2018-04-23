@@ -26,7 +26,6 @@ class DataModel(context: Context) {
                         else
                             Observable.just(it)
                     }
-
         }else{
             repositoryNetwork.getListCity().map {
                 cache.saveCities(it,!cacheFlag)
@@ -49,6 +48,26 @@ class DataModel(context: Context) {
             }
         }else{
             repositoryNetwork.getListHostel(city).map {
+                cache.saveHostels(it,cacheFlag)
+                it
+            }
+        }
+    }
+
+    fun getListHostel(cacheFlag:Boolean): Observable<List<Hostel>>? {
+        return if(cacheFlag){
+            repository.getListHostel().concatMap {
+                if(it.isEmpty())
+                    repositoryNetwork
+                            .getListHostel()
+                            .map{
+                                cache.saveHostels(it,!cacheFlag)
+                                it
+                            }
+                else Observable.just(it)
+            }
+        }else{
+            repositoryNetwork.getListHostel().map {
                 cache.saveHostels(it,cacheFlag)
                 it
             }

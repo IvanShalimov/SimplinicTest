@@ -1,6 +1,7 @@
 package com.example.ivan.simplinictest.mvp
 
 import android.os.Bundle
+import android.util.Log
 import com.example.ivan.simplinictest.mvp.gui.ListView
 import com.hannesdorfmann.mosby3.mvp.viewstate.RestorableViewState
 
@@ -9,6 +10,7 @@ class ListViewState: RestorableViewState<ListView> {
     companion object {
         val SHOW_LIST_CITIES = 1
         val SHOW_LIST_HOSTEL = 2
+        val SHOW_LIST_ALL_HOSTEL = 3
 
         //key for save
         val STATE = "state"
@@ -35,6 +37,10 @@ class ListViewState: RestorableViewState<ListView> {
             }
             SHOW_LIST_HOSTEL ->{
                 view?.refreshData(1,true)
+            }
+            SHOW_LIST_ALL_HOSTEL ->{
+                Log.d("Test","SHOW_LIST_ALL_HOSTEL 1")
+                view?.loadAllHostel()
             }
         }
     }

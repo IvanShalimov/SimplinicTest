@@ -22,6 +22,7 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         SwipeRefreshLayout.OnRefreshListener,ListView,ListAdapter.Callback,
         CompoundButton.OnCheckedChangeListener {
 
+
     override fun setTitleCity(string:String) {
         toolbar.title = "${getString(R.string.app_name)}:$string"
     }
@@ -51,7 +52,8 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
                 .actionView
                 .findViewById(R.id.switch_button) as SwitchCompat
 
-        if(viewState.currentViewState == ListViewState.SHOW_LIST_HOSTEL){
+        if(viewState.currentViewState == ListViewState.SHOW_LIST_HOSTEL ||
+                viewState.currentViewState == ListViewState.SHOW_LIST_ALL_HOSTEL){
             listSwitch.isChecked = true
         }
 
@@ -85,8 +87,8 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
 
         if(isChecked){
             //hotels
-            viewState.currentViewState = ListViewState.SHOW_LIST_HOSTEL
-            refreshData(1,true)
+            loadAllHostel()
+            //refreshData(1,true)
         } else {
             //cities
             viewState.currentViewState = ListViewState.SHOW_LIST_CITIES
@@ -107,9 +109,12 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
 
     override fun setData(data: Any?,type:Int) {
         viewState.currentViewState = type
-        adapter.setData(data,type)
+        if(type>2)
+            adapter.setData(data,type-2)
+        else
+            adapter.setData(data,type)
         list.adapter = adapter
-        viewState.currentViewState = type+1
+
     }
 
     override fun onNewViewStateInstance() {
@@ -136,5 +141,10 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()
+    }
+
+    override fun loadAllHostel() {
+        viewState.currentViewState = ListViewState.SHOW_LIST_ALL_HOSTEL
+        presenter.loadAllHostel(true)
     }
 }

@@ -10,4 +10,6 @@ interface Repository {
 
     fun getListHostel(city:Int?):Observable<List<Hostel>>
 
+    fun getListHostel():Observable<List<Hostel>>
+
 }

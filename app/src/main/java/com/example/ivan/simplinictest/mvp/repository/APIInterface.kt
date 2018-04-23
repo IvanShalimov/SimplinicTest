@@ -17,4 +17,8 @@ interface APIInterface {
     @Headers("Content-Type: application/json")
     @GET("hostels/byCity/{id}")
     fun getListHostel(@Path("id") id: Int?): Call<List<Hostel>>
+
+    @Headers("Content-Type: application/json")
+    @GET("hostels")
+    fun getListHostels(): Call<List<Hostel>>
 }

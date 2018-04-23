@@ -34,6 +34,16 @@ class NetworkRepository : Repository {
         return Observable.create(onSubscribe)
     }
 
+    override fun getListHostel(): Observable<List<Hostel>> {
+        val onSubscribe = Observable.OnSubscribe<List<Hostel>> { subscriber ->
+            val call = apiService?.getListHostels()
+            subscriber.onNext(call?.execute()?.body())
+            subscriber.onCompleted()
+        }
+
+        return Observable.create(onSubscribe)
+    }
+
     init {
        val retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
