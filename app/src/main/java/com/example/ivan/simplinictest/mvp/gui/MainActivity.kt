@@ -8,31 +8,107 @@ import android.support.v7.widget.SwitchCompat
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.CompoundButton
 import com.example.ivan.simplinictest.R
 import com.example.ivan.simplinictest.mvp.ListPresenter
 import com.example.ivan.simplinictest.mvp.ListViewState
+import com.example.ivan.simplinictest.mvp.repository.model.City
 import com.hannesdorfmann.mosby3.mvp.viewstate.MvpViewStateActivity
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState>(),
-        SwipeRefreshLayout.OnRefreshListener,ListView,ListAdapter.Callback {
+        SwipeRefreshLayout.OnRefreshListener,ListView,ListAdapter.Callback,
+        CompoundButton.OnCheckedChangeListener {
+
+    override fun setTitleCity(string:String) {
+        toolbar.title = "${getString(R.string.app_name)}:$string"
+    }
+
+    private lateinit var adapter: ListAdapter
+    lateinit var listSwitch:SwitchCompat
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
+
+        val layoutManager = LinearLayoutManager(this)
+        list.layoutManager = layoutManager
+        adapter = ListAdapter()
+        adapter.callback = this
+        list.adapter = adapter
+        swipe_layout.setOnRefreshListener(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        val itemSwitch = menu.findItem(R.id.app_bar_switch)
+        itemSwitch.setActionView(R.layout.switch_item)
+        listSwitch = menu
+                .findItem(R.id.app_bar_switch)
+                .actionView
+                .findViewById(R.id.switch_button) as SwitchCompat
+        listSwitch.setOnCheckedChangeListener(this)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                if(viewState.currentViewState == 1){
+                    refreshData(0)
+                } else if(viewState.currentViewState == 2){
+                    refreshData(1)
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onRefresh() {
+        if(viewState.currentViewState == 1){
+            refreshData(0)
+        } else if(viewState.currentViewState == 2){
+            refreshData(1)
+        }
+    }
+
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+
+        if(isChecked){
+            //hotels
+            viewState.currentViewState = ListViewState.SHOW_LIST_HOSTEL
+            refreshData(1)//presenter.loadData(false,0)
+        } else {
+            //cities
+            viewState.currentViewState = ListViewState.SHOW_LIST_CITIES
+            refreshData(0)//presenter.loadData(false)
+        }
+    }
+
     override fun lockScreen(flag: Boolean) {
         swipe_layout.isRefreshing = flag
     }
 
-    override fun onSelectItem(id: Int?) {
-        presenter.selectedCity = id
+    override fun onSelectItem(city: City) {
+        presenter.selectedCity = city.getId()
+        viewState.selectedCity = city.getId()
+        viewState.cityName = city.getLabel()
+        setTitleCity(city.getLabel()!!)
     }
 
     override fun setData(data: Any?,type:Int) {
+        viewState.currentViewState = type
         adapter.setData(data,type)
         list.adapter = adapter
+        viewState.currentViewState = type+1
     }
 
     override fun onNewViewStateInstance() {
-
+        refreshData(0)
     }
 
     override fun createPresenter(): ListPresenter {
@@ -43,66 +119,12 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         return ListViewState()
     }
 
-
-    lateinit var adapter: ListAdapter
-    lateinit var layoutManager:RecyclerView.LayoutManager
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-
-        layoutManager = LinearLayoutManager(this)
-        list.layoutManager = layoutManager
-        adapter = ListAdapter()
-        adapter.callback = this
-        list.adapter = adapter
-        swipe_layout.setOnRefreshListener(this)
-
-        presenter.loadData(false)
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        val itemSwitch = menu.findItem(R.id.app_bar_switch)
-        itemSwitch.setActionView(R.layout.switch_item)
-        val switch = menu
-                .findItem(R.id.app_bar_switch)
-                .actionView
-                .findViewById(R.id.switch_button) as SwitchCompat
-        switch.setOnCheckedChangeListener({ buttonView, isChecked ->
-            if(isChecked){
-                //hotels
-                Log.d("Test","hostel")
-                //adapter.changeData(ListAdapter.HOSTEL)
-                presenter.loadData(false,0)
-            } else {
-                //cities
-                Log.d("Test","cities")
-                presenter.loadData(false)
-            }
-        })
-
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> {
-
-                true
-            }
-/*            R.id.app_bar_switch ->{
-                val a = item.actionView as SwitchCompat
-                Log.d("Test","checked = "+a.isChecked)
-                true
-            }*/
-            else -> super.onOptionsItemSelected(item)
+    override fun refreshData(flag:Int) {
+        if(flag == 0){
+            presenter.loadData(false)
+        } else if(flag == 1){
+            presenter.loadData(false,0)
         }
-    }
 
-    override fun onRefresh() {
-        Log.d("Test","onRefresh")
     }
 }

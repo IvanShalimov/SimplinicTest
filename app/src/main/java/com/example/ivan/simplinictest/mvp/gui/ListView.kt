@@ -7,4 +7,8 @@ interface ListView: MvpView {
     fun setData(data:Any?,typeData:Int)
 
     fun lockScreen(flag:Boolean)
+
+    fun refreshData(flag:Int)
+
+    fun setTitleCity(string:String)
 }

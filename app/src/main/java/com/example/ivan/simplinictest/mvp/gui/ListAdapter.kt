@@ -21,7 +21,6 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
     var typListData = CITIES
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.d("Test","onCreateViewHolder")
         val view: View
         if(typListData == CITIES){
             view = LayoutInflater.from(parent.context).inflate(R.layout.city_list_item,parent,false)
@@ -45,7 +44,7 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
             holder.peoples?.text = "${item.getCountPeople()}"
             holder.hotels?.text ="${item.getCountHostel()}"
             holder.cityItem?.setOnClickListener {
-                callback?.onSelectItem(item.getId())
+                callback?.onSelectItem(item)
             }
         } else {
             val item =  list[position] as Hostel
@@ -72,6 +71,6 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
     }
 
     interface Callback{
-        fun onSelectItem(id:Int?)
+        fun onSelectItem(city:City)
     }
 }
