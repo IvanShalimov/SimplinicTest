@@ -8,9 +8,9 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 
 
-class Cashe(context: Context) {
+class Cache(context: Context) {
 
-    var helper: DBHelper = DBHelper(context)
+    private var helper: DBHelper = DBHelper(context)
 
     fun saveCities(cities: List<City>, force: Boolean) {
 

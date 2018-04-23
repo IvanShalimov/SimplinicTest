@@ -2,38 +2,35 @@ package com.example.ivan.simplinictest.mvp.repository
 
 import android.content.Context
 import com.example.ivan.simplinictest.mvp.repository.model.City
+import com.example.ivan.simplinictest.mvp.repository.model.Hostel
 import rx.Observable
 
 
 class DataModel(context: Context) {
 
-    private val repositoryNetwork:NetworkRepository = NetworkRepository(Cashe(context))
-    val repository:CashRepository = CashRepository(Cashe(context))
+    private val cache = Cache(context)
+    val repository: CacheRepository = CacheRepository(cache)
+    private val repositoryNetwork:NetworkRepository = NetworkRepository()
 
-
-    fun getListCity(offline:Boolean,callback: Repository.ResponseCallback) {
-        val observable = Observable
-                .just(ArrayList<City>())
-
-        if(offline){
-            repository.callback = callback
+    fun getListCity(offline:Boolean,force:Boolean):Observable<List<City>> {
+        return if(offline){
             repository.getListCity()
         }else{
-            repositoryNetwork.callback = callback
-            repositoryNetwork.getListCity()
+            repositoryNetwork.getListCity().map {
+                cache.saveCities(it,force)
+                it
+            }
         }
-
     }
 
-    fun getListHostel(offline:Boolean,city: Int?,
-                      callback:Repository.ResponseCallback){
-        if(offline){
-            repository.callback = callback
+    fun getListHostel(offline:Boolean,city: Int?,force:Boolean):Observable<List<Hostel>>{
+        return if(offline){
             repository.getListHostel(city)
         }else{
-            repositoryNetwork.callback = callback
-            repositoryNetwork.getListHostel(city)
+            repositoryNetwork.getListHostel(city).map {
+                cache.saveHostels(it,force)
+                it
+            }
         }
-
     }
 }

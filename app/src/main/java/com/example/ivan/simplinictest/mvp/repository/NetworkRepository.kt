@@ -4,44 +4,34 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.ivan.simplinictest.mvp.repository.model.City
 import com.example.ivan.simplinictest.mvp.repository.model.Hostel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import rx.Observable
 
 
-class NetworkRepository(val cashe:Cashe) : Repository {
+class NetworkRepository : Repository {
 
     private val BASE_URL = "http://azition.pro/"
     private var apiService:APIInterface? = null
-    var callback: Repository.ResponseCallback? = null
 
-    override fun getListCity() {
-        val call = apiService?.getCities()
-        call?.enqueue(object : Callback<List<City>> {
-            override fun onResponse(call: Call<List<City>>, response: Response<List<City>>) {
-                cashe.saveCities(response.body()!!,false)
-                callback?.onSuccess(response.body() as Any)
-            }
+    override fun getListCity(): Observable<List<City>> {
 
-            override fun onFailure(call: Call<List<City>>, t: Throwable) {
-                callback?.onError(t)
-            }
-        })
+        val onSubscribe = Observable.OnSubscribe<List<City>> { subscriber ->
+            val call = apiService?.getCities()
+            subscriber.onNext(call?.execute()?.body())
+            subscriber.onCompleted()
+        }
+
+        return Observable.create(onSubscribe)
     }
 
-    override fun getListHostel(city: Int?) {
-        val call = apiService?.getListHostel(city)
-        call?.enqueue(object : Callback<List<Hostel>> {
-            override fun onResponse(call: Call<List<Hostel>>, response: Response<List<Hostel>>) {
-                cashe.saveHostels(response.body() !!,false)
-                callback?.onSuccess(response.body() as Any)
-            }
+    override fun getListHostel(city: Int?):Observable<List<Hostel>> {
 
-            override fun onFailure(call: Call<List<Hostel>>, t: Throwable) {
-                // Log error here since request failed
-                callback?.onError(t)
-            }
-        })
+        val onSubscribe = Observable.OnSubscribe<List<Hostel>> { subscriber ->
+            val call = apiService?.getListHostel(city)
+            subscriber.onNext(call?.execute()?.body())
+            subscriber.onCompleted()
+        }
+
+        return Observable.create(onSubscribe)
     }
 
     init {

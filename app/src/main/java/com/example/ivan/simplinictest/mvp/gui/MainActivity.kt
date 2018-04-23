@@ -63,9 +63,9 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         return when (item.itemId) {
             R.id.action_settings -> {
                 if(viewState.currentViewState == 1){
-                    refreshData(0,false)
+                    refreshData(0,true)
                 } else if(viewState.currentViewState == 2){
-                    refreshData(1,false)
+                    refreshData(1,true)
                 }
                 true
             }
@@ -127,11 +127,15 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
 
     override fun refreshData(flag:Int,forceCash:Boolean) {
         if(flag == 0){
-            presenter.loadData(forceCash)
+            presenter.loadData(forceCash,true)
         } else if(flag == 1){
-            presenter.loadData(forceCash,0)
+            presenter.loadData(forceCash,0,true)
         }
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
 }

@@ -4,49 +4,62 @@ import android.content.Context
 import com.example.ivan.simplinictest.mvp.gui.ListAdapter
 import com.example.ivan.simplinictest.mvp.gui.ListView
 import com.example.ivan.simplinictest.mvp.repository.DataModel
-import com.example.ivan.simplinictest.mvp.repository.NetworkRepository
-import com.example.ivan.simplinictest.mvp.repository.Repository
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
-class ListPresenter(context: Context): MvpBasePresenter<ListView>(),
-        Repository.ResponseCallback {
-
+class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
+    var repository:DataModel? = null
     var cityLoad = false
     var hostelLoad = false
-
+    var subscription:Subscription? = null
     var selectedCity:Int? = 2
-    override fun onSuccess(response: Any) {
-        var returnType = ListAdapter.CITIES
-        if(cityLoad){
-            returnType = ListAdapter.CITIES
-            cityLoad = false
-        }
-        if(hostelLoad){
-            returnType = ListAdapter.HOSTEL
-            hostelLoad = false
-        }
-        view.lockScreen(false)
-        view?.setData(response,returnType)
-    }
-
-    override fun onError(t: Throwable) {
-        view.lockScreen(false)
-    }
-
-    var repository:DataModel? = null
 
     init {
-       repository = DataModel(context)
+        repository = DataModel(context)
     }
 
-    fun loadData(cash:Boolean){
-        cityLoad = true
+   private fun onSuccess(response: Any) {
+       var returnType = ListAdapter.CITIES
+
+       if(cityLoad){
+           returnType = ListAdapter.CITIES
+           cityLoad = false
+       }
+
+       if(hostelLoad){
+           returnType = ListAdapter.HOSTEL
+           hostelLoad = false
+       }
+
+       view.lockScreen(false)
+       view?.setData(response,returnType)
+    }
+
+    fun loadData(cash:Boolean,force:Boolean){
         view.lockScreen(true)
-        repository?.getListCity(cash,this)
+        cityLoad = true
+        subscription = repository?.getListCity(cash)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe({
+                    onSuccess(it)
+                })
     }
 
-    fun loadData(cash:Boolean,id:Int){view.lockScreen(true)
+    fun loadData(cash:Boolean,stub:Int,force:Boolean){
+        view.lockScreen(true)
         hostelLoad = true
-        repository?.getListHostel(cash,selectedCity,this)
+        subscription = repository?.getListHostel(cash,selectedCity)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe({
+                    onSuccess(it)
+                })
+    }
+
+    fun onDestroy(){
+        subscription?.unsubscribe()
     }
 }
