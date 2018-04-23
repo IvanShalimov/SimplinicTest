@@ -1,12 +1,13 @@
 package com.example.ivan.simplinictest.mvp
 
+import android.content.Context
 import com.example.ivan.simplinictest.mvp.gui.ListAdapter
 import com.example.ivan.simplinictest.mvp.gui.ListView
 import com.example.ivan.simplinictest.mvp.repository.DataModel
 import com.example.ivan.simplinictest.mvp.repository.NetworkRepository
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter
 
-class ListPresenter: MvpBasePresenter<ListView>(), NetworkRepository.ResponseCallback {
+class ListPresenter(context: Context): MvpBasePresenter<ListView>(), NetworkRepository.ResponseCallback {
 
     var cityLoad = false
     var hostelLoad = false
@@ -34,7 +35,7 @@ class ListPresenter: MvpBasePresenter<ListView>(), NetworkRepository.ResponseCal
     var repository:DataModel? = null
 
     init {
-       repository = DataModel()
+       repository = DataModel(context)
     }
 
     fun loadData(cash:Boolean){

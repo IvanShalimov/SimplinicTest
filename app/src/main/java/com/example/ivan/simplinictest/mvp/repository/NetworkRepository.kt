@@ -10,7 +10,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class NetworkRepository() : Repository {
+class NetworkRepository(val cashe:Cashe) : Repository {
 
     private val BASE_URL = "http://azition.pro/"
     private var apiService:APIInterface? = null
@@ -20,15 +20,11 @@ class NetworkRepository() : Repository {
         val call = apiService?.getCities()
         call?.enqueue(object : Callback<List<City>> {
             override fun onResponse(call: Call<List<City>>, response: Response<List<City>>) {
-                //val movies = response.body()
                 callback?.onSuccess(response.body() as Any)
-                //Log.d("", "Number of movies received: " + movies?.size)
             }
 
             override fun onFailure(call: Call<List<City>>, t: Throwable) {
-                // Log error here since request failed
                 callback?.onError(t)
-                Log.e("", t.toString())
             }
         })
     }
@@ -37,9 +33,7 @@ class NetworkRepository() : Repository {
         val call = apiService?.getListHostel(city)
         call?.enqueue(object : Callback<List<Hostel>> {
             override fun onResponse(call: Call<List<Hostel>>, response: Response<List<Hostel>>) {
-                //val movies = response.body()
                 callback?.onSuccess(response.body() as Any)
-                //Log.d("", "Number of movies received: " + movies?.size)
             }
 
             override fun onFailure(call: Call<List<Hostel>>, t: Throwable) {

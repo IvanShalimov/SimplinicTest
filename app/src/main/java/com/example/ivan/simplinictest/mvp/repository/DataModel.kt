@@ -1,10 +1,12 @@
 package com.example.ivan.simplinictest.mvp.repository
 
+import android.content.Context
 
-class DataModel {
 
-    val repositoryNetwork:NetworkRepository = NetworkRepository()
-   // val repository:CashRepository = CashRepository()
+class DataModel(context: Context) {
+
+    val repositoryNetwork:NetworkRepository = NetworkRepository(Cashe(context))
+    val repository:CashRepository = CashRepository()
     var fromCash = false
 
 

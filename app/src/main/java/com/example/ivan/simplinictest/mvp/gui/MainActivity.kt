@@ -118,7 +118,7 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     }
 
     override fun createPresenter(): ListPresenter {
-        return ListPresenter()
+        return ListPresenter(applicationContext)
     }
 
     override fun createViewState(): ListViewState {
