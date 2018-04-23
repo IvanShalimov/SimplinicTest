@@ -5,9 +5,11 @@ import com.example.ivan.simplinictest.mvp.gui.ListAdapter
 import com.example.ivan.simplinictest.mvp.gui.ListView
 import com.example.ivan.simplinictest.mvp.repository.DataModel
 import com.example.ivan.simplinictest.mvp.repository.NetworkRepository
+import com.example.ivan.simplinictest.mvp.repository.Repository
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter
 
-class ListPresenter(context: Context): MvpBasePresenter<ListView>(), NetworkRepository.ResponseCallback {
+class ListPresenter(context: Context): MvpBasePresenter<ListView>(),
+        Repository.ResponseCallback {
 
     var cityLoad = false
     var hostelLoad = false
@@ -28,7 +30,6 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(), NetworkRepo
     }
 
     override fun onError(t: Throwable) {
-        //stub
         view.lockScreen(false)
     }
 
@@ -41,13 +42,11 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(), NetworkRepo
     fun loadData(cash:Boolean){
         cityLoad = true
         view.lockScreen(true)
-        repository?.fromCash  = cash
-        repository?.getListCity(this)
+        repository?.getListCity(cash,this)
     }
 
     fun loadData(cash:Boolean,id:Int){view.lockScreen(true)
         hostelLoad = true
-        repository?.fromCash  = cash
-        repository?.getListHostel(selectedCity,this)
+        repository?.getListHostel(cash,selectedCity,this)
     }
 }

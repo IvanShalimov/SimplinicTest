@@ -1,11 +1,15 @@
 package com.example.ivan.simplinictest.mvp.repository
 
-class CashRepository:Repository {
+class CashRepository(private val cashe: Cashe) : Repository {
+
+    var callback: Repository.ResponseCallback? = null
+
     override fun getListCity() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        callback?.onSuccess(cashe.getCities())
     }
 
     override fun getListHostel(city: Int?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        callback?.onSuccess(cashe.getHostels(city))
+
     }
 }

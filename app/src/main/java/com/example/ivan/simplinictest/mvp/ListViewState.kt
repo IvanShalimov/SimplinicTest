@@ -31,10 +31,10 @@ class ListViewState: RestorableViewState<ListView> {
         view?.setTitleCity(cityName!!)
         when(currentViewState){
             SHOW_LIST_CITIES ->{
-                view?.refreshData(0)
+                view?.refreshData(0,true)
             }
             SHOW_LIST_HOSTEL ->{
-                view?.refreshData(1)
+                view?.refreshData(1,true)
             }
         }
     }

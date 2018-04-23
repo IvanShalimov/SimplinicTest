@@ -63,9 +63,9 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         return when (item.itemId) {
             R.id.action_settings -> {
                 if(viewState.currentViewState == 1){
-                    refreshData(0)
+                    refreshData(0,false)
                 } else if(viewState.currentViewState == 2){
-                    refreshData(1)
+                    refreshData(1,false)
                 }
                 true
             }
@@ -75,9 +75,9 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
 
     override fun onRefresh() {
         if(viewState.currentViewState == 1){
-            refreshData(0)
+            refreshData(0,false)
         } else if(viewState.currentViewState == 2){
-            refreshData(1)
+            refreshData(1,false)
         }
     }
 
@@ -86,11 +86,11 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         if(isChecked){
             //hotels
             viewState.currentViewState = ListViewState.SHOW_LIST_HOSTEL
-            refreshData(1)//presenter.loadData(false,0)
+            refreshData(1,true)//presenter.loadData(false,0)
         } else {
             //cities
             viewState.currentViewState = ListViewState.SHOW_LIST_CITIES
-            refreshData(0)//presenter.loadData(false)
+            refreshData(0,true)//presenter.loadData(false)
         }
     }
 
@@ -114,7 +114,7 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
 
     override fun onNewViewStateInstance() {
         setTitleCity("Moscow")
-        refreshData(0)
+        refreshData(0,true)
     }
 
     override fun createPresenter(): ListPresenter {
@@ -125,12 +125,13 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         return ListViewState()
     }
 
-    override fun refreshData(flag:Int) {
+    override fun refreshData(flag:Int,forceCash:Boolean) {
         if(flag == 0){
-            presenter.loadData(false)
+            presenter.loadData(forceCash)
         } else if(flag == 1){
-            presenter.loadData(false,0)
+            presenter.loadData(forceCash,0)
         }
 
     }
+
 }
