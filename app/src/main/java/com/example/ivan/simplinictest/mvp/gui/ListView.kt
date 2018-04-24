@@ -10,8 +10,7 @@ interface ListView: MvpView {
 
     fun refreshData(flag:Int,forceNetwork:Boolean)
 
-    /**Crutch*/
-    fun loadAllHostel()
+    fun setTitleCity(string:String?)
 
-    fun setTitleCity(string:String)
+
 }

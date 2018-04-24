@@ -12,8 +12,8 @@ import com.example.ivan.simplinictest.mvp.repository.model.Hostel
 class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
 
     companion object {
-        val CITIES:Int = 0
-        val HOSTEL:Int = 1
+        const val CITIES:Int = 0
+        const val HOSTEL:Int = 1
     }
 
     var list = ArrayList<Any>()

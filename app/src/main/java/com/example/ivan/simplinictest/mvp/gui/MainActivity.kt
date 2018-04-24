@@ -3,9 +3,7 @@ package com.example.ivan.simplinictest.mvp.gui
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SwitchCompat
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
@@ -22,9 +20,8 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         SwipeRefreshLayout.OnRefreshListener,ListView,ListAdapter.Callback,
         CompoundButton.OnCheckedChangeListener {
 
-
-    override fun setTitleCity(string:String) {
-        toolbar.title = "${getString(R.string.app_name)}:$string"
+    override fun setTitleCity(string:String?) {
+        toolbar.title = "${getString(R.string.app_name)}$string"
     }
 
     private lateinit var adapter: ListAdapter
@@ -52,9 +49,14 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
                 .actionView
                 .findViewById(R.id.switch_button) as SwitchCompat
 
-        if(viewState.currentViewState == ListViewState.SHOW_LIST_HOSTEL ||
-                viewState.currentViewState == ListViewState.SHOW_LIST_ALL_HOSTEL){
+        //restore checked button
+        if(viewState.currentViewState == ListViewState.SHOW_LIST_ALL_HOSTEL){
             listSwitch.isChecked = true
+        }
+
+        //restore up button
+        if(viewState.currentViewState == ListViewState.SHOW_LIST_HOSTEL){
+            settingUpButton(true)
         }
 
         listSwitch.setOnCheckedChangeListener(this)
@@ -64,22 +66,36 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> {
-                if(viewState.currentViewState == 1){
-                    refreshData(0,false)
-                } else if(viewState.currentViewState == 2){
-                    refreshData(1,false)
-                }
+                reactOnRefresh()
+                true
+            }
+            android.R.id.home ->{
+                settingUpButton(false)
+                setTitleCity("")
+                refreshData(ListViewState.SHOW_LIST_CITIES,false)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    private fun settingUpButton(flag:Boolean){
+        supportActionBar?.setDisplayHomeAsUpEnabled(flag)
+        supportActionBar?.setDisplayShowHomeEnabled(flag)
+    }
+
     override fun onRefresh() {
-        if(viewState.currentViewState == 1){
-            refreshData(0,false)
-        } else if(viewState.currentViewState == 2){
-            refreshData(1,false)
+        reactOnRefresh()
+    }
+
+    private fun reactOnRefresh(){
+        when {
+            viewState.currentViewState == ListViewState.SHOW_LIST_CITIES ->
+                refreshData(ListViewState.SHOW_LIST_CITIES,false)
+            viewState.currentViewState == ListViewState.SHOW_LIST_HOSTEL ->
+                refreshData(ListViewState.SHOW_LIST_HOSTEL,false)
+            viewState.currentViewState == ListViewState.SHOW_LIST_ALL_HOSTEL ->
+                refreshData(ListViewState.SHOW_LIST_ALL_HOSTEL,false)
         }
     }
 
@@ -87,12 +103,12 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
 
         if(isChecked){
             //hotels
-            loadAllHostel()
-            //refreshData(1,true)
+            viewState.currentViewState = ListViewState.SHOW_LIST_ALL_HOSTEL
+            refreshData(ListViewState.SHOW_LIST_ALL_HOSTEL,true)
         } else {
             //cities
             viewState.currentViewState = ListViewState.SHOW_LIST_CITIES
-            refreshData(0,true)
+            refreshData(ListViewState.SHOW_LIST_CITIES,true)
         }
     }
 
@@ -101,25 +117,32 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     }
 
     override fun onSelectItem(city: City) {
+        //store variable
         presenter.selectedCity = city.getId()
         viewState.selectedCity = city.getId()
         viewState.cityName = city.getLabel()
-        setTitleCity(city.getLabel()!!)
+        //ui
+        setTitleCity(":${city.getLabel()}")
+        settingUpButton(true)
+        //request
+        viewState.currentViewState = ListViewState.SHOW_LIST_HOSTEL
+        refreshData(ListViewState.SHOW_LIST_HOSTEL,true)
     }
 
-    override fun setData(data: Any?,type:Int) {
-        viewState.currentViewState = type
-        if(type>2)
-            adapter.setData(data,type-2)
+    override fun setData(data: Any?, state:Int) {
+        viewState.currentViewState = state
+
+        if(state > 1)
+            adapter.setData(data, ListAdapter.HOSTEL)
         else
-            adapter.setData(data,type)
+            adapter.setData(data, ListAdapter.CITIES)
         list.adapter = adapter
 
     }
 
     override fun onNewViewStateInstance() {
-        setTitleCity("Moscow")
-        refreshData(0,true)
+        //setTitleCity("Moscow")
+        refreshData(ListViewState.SHOW_LIST_CITIES,true)
     }
 
     override fun createPresenter(): ListPresenter {
@@ -131,10 +154,10 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     }
 
     override fun refreshData(flag:Int,cache:Boolean) {
-        if(flag == 0){
-            presenter.loadCity(cache)
-        } else if(flag == 1){
-            presenter.loadHostel(cache)
+        when (flag) {
+            ListViewState.SHOW_LIST_CITIES -> presenter.loadCity(cache)
+            ListViewState.SHOW_LIST_HOSTEL -> presenter.loadHostel(cache)
+            ListViewState.SHOW_LIST_ALL_HOSTEL ->  presenter.loadAllHostel(true)
         }
     }
 
@@ -143,8 +166,4 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         presenter.onDestroy()
     }
 
-    override fun loadAllHostel() {
-        viewState.currentViewState = ListViewState.SHOW_LIST_ALL_HOSTEL
-        presenter.loadAllHostel(true)
-    }
 }

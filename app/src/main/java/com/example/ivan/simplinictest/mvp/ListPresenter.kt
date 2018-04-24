@@ -15,7 +15,7 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
 
     var cityLoad = false
     var hostelLoad = false
-    var allHostelLoad = false;
+    var allHostelLoad = false
 
     var subscription:Subscription? = null
     var selectedCity:Int? = 2
@@ -25,20 +25,20 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
     }
 
    private fun onSuccess(response: Any) {
-       var returnType = ListAdapter.CITIES
+       var returnType = ListViewState.SHOW_LIST_CITIES
 
        if(cityLoad){
-           returnType = ListAdapter.CITIES
+           returnType = ListViewState.SHOW_LIST_CITIES
            cityLoad = false
        }
 
        if(hostelLoad){
-           returnType = ListAdapter.HOSTEL
+           returnType = ListViewState.SHOW_LIST_HOSTEL
            hostelLoad = false
        }
 
        if(allHostelLoad){
-           returnType = 3
+           returnType = ListViewState.SHOW_LIST_ALL_HOSTEL
            allHostelLoad = false
        }
 
@@ -69,7 +69,6 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
     }
 
     fun loadAllHostel(cash:Boolean){
-        Log.d("Test","loadAllHostel")
         view.lockScreen(true)
         allHostelLoad = true
         subscription = repository?.getListHostel(cash)

@@ -30,17 +30,17 @@ class ListViewState: RestorableViewState<ListView> {
 
     override fun apply(view: ListView?, retained: Boolean) {
 
-        view?.setTitleCity(cityName!!)
+
         when(currentViewState){
             SHOW_LIST_CITIES ->{
-                view?.refreshData(0,true)
+                view?.refreshData(SHOW_LIST_CITIES,true)
             }
             SHOW_LIST_HOSTEL ->{
-                view?.refreshData(1,true)
+                view?.setTitleCity(":$cityName")
+                view?.refreshData(SHOW_LIST_HOSTEL,true)
             }
             SHOW_LIST_ALL_HOSTEL ->{
-                Log.d("Test","SHOW_LIST_ALL_HOSTEL 1")
-                view?.loadAllHostel()
+                view?.refreshData(SHOW_LIST_ALL_HOSTEL,true)
             }
         }
     }
