@@ -129,10 +129,10 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         refreshData(ListViewState.SHOW_LIST_HOSTEL,true)
     }
 
-    override fun setData(data: Any?, state:Int) {
-        viewState.currentViewState = state
+    override fun setData(data: Any?, typeData:Int) {
+        viewState.currentViewState = typeData
 
-        if(state > 1)
+        if(typeData >  ListViewState.SHOW_LIST_CITIES)
             adapter.setData(data, ListAdapter.HOSTEL)
         else
             adapter.setData(data, ListAdapter.CITIES)
@@ -141,7 +141,6 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     }
 
     override fun onNewViewStateInstance() {
-        //setTitleCity("Moscow")
         refreshData(ListViewState.SHOW_LIST_CITIES,true)
     }
 
@@ -153,11 +152,11 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         return ListViewState()
     }
 
-    override fun refreshData(flag:Int,cache:Boolean) {
+    override fun refreshData(flag:Int, forceNetwork:Boolean) {
         when (flag) {
-            ListViewState.SHOW_LIST_CITIES -> presenter.loadCity(cache)
-            ListViewState.SHOW_LIST_HOSTEL -> presenter.loadHostel(cache)
-            ListViewState.SHOW_LIST_ALL_HOSTEL ->  presenter.loadAllHostel(true)
+            ListViewState.SHOW_LIST_CITIES -> presenter.loadCity(forceNetwork)
+            ListViewState.SHOW_LIST_HOSTEL -> presenter.loadHostel(forceNetwork)
+            ListViewState.SHOW_LIST_ALL_HOSTEL ->  presenter.loadAllHostel(forceNetwork)
         }
     }
 
