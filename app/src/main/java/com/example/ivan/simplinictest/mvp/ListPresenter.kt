@@ -47,7 +47,7 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
     }
 
     fun loadCity(cash:Boolean){
-        view.lockScreen(true)
+        view.lockScreen(!cash)
         cityLoad = true
         subscription = repository?.getListCity(cash)
                 ?.subscribeOn(Schedulers.io())
@@ -58,7 +58,7 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
     }
 
     fun loadHostel(cash:Boolean){
-        view.lockScreen(true)
+        view.lockScreen(!cash)
         hostelLoad = true
         subscription = repository?.getListHostel(cash,selectedCity)
                 ?.subscribeOn(Schedulers.io())
@@ -69,7 +69,7 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
     }
 
     fun loadAllHostel(cash:Boolean){
-        view.lockScreen(true)
+        view.lockScreen(!cash)
         allHostelLoad = true
         subscription = repository?.getListHostel(cash)
                 ?.subscribeOn(Schedulers.io())
