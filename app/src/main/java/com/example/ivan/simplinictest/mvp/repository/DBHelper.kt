@@ -8,16 +8,16 @@ class DBHelper(context: Context):
         SQLiteOpenHelper(context,"database",null,1) {
 
     companion object {
-        val TABLE_CITY = "city"
-        val TABLE_PUBLIC_ID = "public_id"
-        val TABLE_LABEL = "label"
-        val TABLE_CITY_COUNT_PEOPLE = "count_people"
-        val TABLE_CITY_COUNT_HOSTEL = "count_hostel"
+        const val TABLE_CITY = "city"
+        const val TABLE_PUBLIC_ID = "public_id"
+        const val TABLE_LABEL = "label"
+        const val TABLE_CITY_COUNT_PEOPLE = "count_people"
+        const val TABLE_CITY_COUNT_HOSTEL = "count_hostel"
 
-        val TABLE_HOSTEL = "hostel"
-        val TABLE_HOSTEL_CITY_ID = "city_id"
-        val TABLE_HOSTEL_RATE = "rate"
-        val TABLE_HOSTEL_ABOUT = "about"
+        const val TABLE_HOSTEL = "hostel"
+        const val TABLE_HOSTEL_CITY_ID = "city_id"
+        const val TABLE_HOSTEL_RATE = "rate"
+        const val TABLE_HOSTEL_ABOUT = "about"
 
     }
 

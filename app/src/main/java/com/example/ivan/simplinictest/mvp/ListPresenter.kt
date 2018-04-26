@@ -1,8 +1,6 @@
 package com.example.ivan.simplinictest.mvp
 
 import android.content.Context
-import android.util.Log
-import com.example.ivan.simplinictest.mvp.gui.ListAdapter
 import com.example.ivan.simplinictest.mvp.gui.ListView
 import com.example.ivan.simplinictest.mvp.repository.DataModel
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter
@@ -13,11 +11,11 @@ import rx.schedulers.Schedulers
 class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
     var repository:DataModel? = null
 
-    var cityLoad = false
-    var hostelLoad = false
-    var allHostelLoad = false
+    private var cityLoad = false
+    private var hostelLoad = false
+    private var allHostelLoad = false
 
-    var subscription:Subscription? = null
+    private var subscription:Subscription? = null
     var selectedCity:Int? = 2
 
     init {

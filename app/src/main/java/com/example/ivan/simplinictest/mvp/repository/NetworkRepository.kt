@@ -9,7 +9,7 @@ import rx.Observable
 
 class NetworkRepository : Repository {
 
-    private val BASE_URL = "http://azition.pro/"
+    private val HOST = "http://azition.pro/"
     private var apiService:APIInterface? = null
 
     override fun getListCity(): Observable<List<City>> {
@@ -46,7 +46,7 @@ class NetworkRepository : Repository {
 
     init {
        val retrofit = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(HOST)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
 

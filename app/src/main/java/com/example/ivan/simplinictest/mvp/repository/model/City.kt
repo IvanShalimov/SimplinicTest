@@ -37,15 +37,8 @@ class City {
         return countPeople
     }
 
-    fun setCountPeople(countPeople: Int?) {
-        this.countPeople = countPeople
-    }
-
     fun getCountHostel(): Int? {
         return countHostel
     }
 
-    fun setCountHostel(countHostel: Int?) {
-        this.countHostel = countHostel
-    }
 }

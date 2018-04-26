@@ -1,9 +1,7 @@
 package com.example.ivan.simplinictest.mvp.gui
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.example.ivan.simplinictest.R
 import com.example.ivan.simplinictest.mvp.repository.model.City
@@ -18,7 +16,7 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
 
     var list = ArrayList<Any>()
     var callback:Callback? = null
-    var typListData = CITIES
+    private var typListData = CITIES
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -40,8 +38,9 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         if(typListData == CITIES){
-           val item =  list[position] as City
+            val item =  list[position] as City
             holder.city?.text = item.getLabel()
             holder.peoples?.text = "${item.getCountPeople()}"
             holder.hotels?.text ="${item.getCountHostel()}"
@@ -63,10 +62,10 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
     }
 
     private fun changeData(type:Int){
-        if (type == CITIES){
-            typListData = CITIES
+        typListData = if (type == CITIES){
+            CITIES
         } else {
-            typListData = HOSTEL
+            HOSTEL
         }
 
         notifyDataSetChanged()

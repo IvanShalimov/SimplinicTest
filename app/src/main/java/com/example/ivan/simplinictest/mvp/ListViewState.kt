@@ -1,21 +1,20 @@
 package com.example.ivan.simplinictest.mvp
 
 import android.os.Bundle
-import android.util.Log
 import com.example.ivan.simplinictest.mvp.gui.ListView
 import com.hannesdorfmann.mosby3.mvp.viewstate.RestorableViewState
 
 class ListViewState: RestorableViewState<ListView> {
 
     companion object {
-        val SHOW_LIST_CITIES = 1
-        val SHOW_LIST_HOSTEL = 2
-        val SHOW_LIST_ALL_HOSTEL = 3
+        const val SHOW_LIST_CITIES = 1
+        const val SHOW_LIST_HOSTEL = 2
+        const val SHOW_LIST_ALL_HOSTEL = 3
 
         //key for save
-        val STATE = "state"
-        val SELECTED_CITY = "city"
-        val NAME_SELECTED_CITY = "name_city"
+        const val STATE = "state"
+        const val SELECTED_CITY = "city"
+        const val NAME_SELECTED_CITY = "name_city"
     }
 
     var currentViewState = 1

@@ -111,7 +111,7 @@ class Cache(context: Context) {
                     cities.add(city)
                 } while (cursor.moveToNext())
             }
-            cursor?.close()
+            cursor.close()
         }
 
         helper.close()
