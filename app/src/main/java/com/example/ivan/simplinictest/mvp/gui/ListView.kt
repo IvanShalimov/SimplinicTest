@@ -12,5 +12,6 @@ interface ListView: MvpView {
 
     fun setTitleCity(string:String?)
 
+    fun showError(errorText:String)
 
 }

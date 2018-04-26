@@ -52,6 +52,8 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe({
                     onSuccess(it)
+                },{
+                    view?.showError("Error load city")
                 })
     }
 
@@ -63,6 +65,8 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe({
                     onSuccess(it)
+                },{
+                    view?.showError("Error load hostels for city")
                 })
     }
 
@@ -74,6 +78,8 @@ class ListPresenter(context: Context): MvpBasePresenter<ListView>(){
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe({
                     onSuccess(it)
+                },{
+                    view?.showError("Error load hostels")
                 })
     }
 

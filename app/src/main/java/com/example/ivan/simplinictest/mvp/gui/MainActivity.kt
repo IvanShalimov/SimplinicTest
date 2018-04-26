@@ -7,6 +7,7 @@ import android.support.v7.widget.SwitchCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
+import android.widget.Toast
 import com.example.ivan.simplinictest.R
 import com.example.ivan.simplinictest.mvp.ListPresenter
 import com.example.ivan.simplinictest.mvp.ListViewState
@@ -165,4 +166,7 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         presenter.onDestroy()
     }
 
+    override fun showError(errorText: String) {
+        Toast.makeText(applicationContext,errorText,Toast.LENGTH_SHORT).show()
+    }
 }
