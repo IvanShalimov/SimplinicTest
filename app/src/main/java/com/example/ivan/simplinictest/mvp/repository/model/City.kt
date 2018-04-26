@@ -1,9 +1,11 @@
 package com.example.ivan.simplinictest.mvp.repository.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class City {
+class City() :Parcelable {
     @SerializedName("id")
     @Expose
     private var id: Int? = null
@@ -16,6 +18,13 @@ class City {
     @SerializedName("countHostel")
     @Expose
     private var countHostel: Int? = null
+
+    constructor(parcel: Parcel) : this() {
+        id = parcel.readValue(Int::class.java.classLoader) as? Int
+        label = parcel.readString()
+        countPeople = parcel.readValue(Int::class.java.classLoader) as? Int
+        countHostel = parcel.readValue(Int::class.java.classLoader) as? Int
+    }
 
     fun getId(): Int? {
         return id
@@ -39,6 +48,27 @@ class City {
 
     fun getCountHostel(): Int? {
         return countHostel
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeValue(id)
+        parcel.writeString(label)
+        parcel.writeValue(countPeople)
+        parcel.writeValue(countHostel)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<City> {
+        override fun createFromParcel(parcel: Parcel): City {
+            return City(parcel)
+        }
+
+        override fun newArray(size: Int): Array<City?> {
+            return arrayOfNulls(size)
+        }
     }
 
 }

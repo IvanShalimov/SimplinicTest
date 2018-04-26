@@ -2,6 +2,8 @@ package com.example.ivan.simplinictest.mvp
 
 import android.os.Bundle
 import com.example.ivan.simplinictest.mvp.gui.ListView
+import com.example.ivan.simplinictest.mvp.repository.model.City
+import com.example.ivan.simplinictest.mvp.repository.model.Hostel
 import com.hannesdorfmann.mosby3.mvp.viewstate.RestorableViewState
 
 class ListViewState: RestorableViewState<ListView> {

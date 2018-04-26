@@ -9,29 +9,14 @@ import com.example.ivan.simplinictest.R
 class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
     //города
-    var city:TextView? = null
-    var peoples:TextView? = null
-    var hotels:TextView? = null
-    var cityItem:CardView? = null
+    var city: TextView? = itemView?.findViewById(R.id.city_name_text)
+    var peoples: TextView? = itemView?.findViewById(R.id.people_count_text)
+    var hotels: TextView? = itemView?.findViewById(R.id.hostel_count_text)
+    var cityItem: CardView? = itemView?.findViewById(R.id.city_item)
 
     //отели
-    var hostel:TextView? = null
-    var rate:hyogeun.github.com.colorratingbarlib.ColorRatingBar? = null
-    var about:TextView? = null
-
-    init {
-        when(itemView?.tag as Int){
-            ListAdapter.CITIES ->{
-                city = itemView.findViewById(R.id.city_name_text)
-                peoples= itemView.findViewById(R.id.people_count_text)
-                hotels = itemView.findViewById(R.id.hostel_count_text)
-                cityItem = itemView.findViewById(R.id.city_item)
-            }
-            ListAdapter.HOSTEL ->{
-                hostel = itemView.findViewById(R.id.hostel_text)
-                rate = itemView.findViewById<hyogeun.github.com.colorratingbarlib.ColorRatingBar>(R.id.rate_text)
-                about = itemView.findViewById(R.id.about_text)
-            }
-        }
-    }
+    var hostel: TextView? = itemView?.findViewById(R.id.hostel_text)
+    var rate: hyogeun.github.com.colorratingbarlib.ColorRatingBar? = itemView?.findViewById(R.id.rate_text)
+    var about: TextView? = itemView?.findViewById(R.id.about_text)
+    var hostelItem: CardView? = itemView?.findViewById(R.id.hostel_item)
 }

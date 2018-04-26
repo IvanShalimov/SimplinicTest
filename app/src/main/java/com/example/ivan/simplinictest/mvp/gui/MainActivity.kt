@@ -1,9 +1,13 @@
 package com.example.ivan.simplinictest.mvp.gui
 
 import android.os.Bundle
+import android.os.Parcelable
+import android.os.PersistableBundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SwitchCompat
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
@@ -12,6 +16,7 @@ import com.example.ivan.simplinictest.R
 import com.example.ivan.simplinictest.mvp.ListPresenter
 import com.example.ivan.simplinictest.mvp.ListViewState
 import com.example.ivan.simplinictest.mvp.repository.model.City
+import com.example.ivan.simplinictest.mvp.repository.model.Hostel
 import com.hannesdorfmann.mosby3.mvp.viewstate.MvpViewStateActivity
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,7 +30,7 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         toolbar.title = "${getString(R.string.app_name)}$string"
     }
 
-    private lateinit var adapter: ListAdapter
+    private lateinit var adapter: ListAdapter<*>
     private lateinit var listSwitch:SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +40,24 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
 
         val layoutManager = LinearLayoutManager(this)
         list.layoutManager = layoutManager
+
         adapter = ListAdapter()
+
+        if (savedInstanceState != null){
+            list.adapter = adapter
+        } else {
+            val listRestore = savedInstanceState?.getParcelableArrayList<City>("list")
+            adapter.setData(listRestore,0)
+
+            list.adapter = adapter
+
+            list.layoutManager.onRestoreInstanceState(savedInstanceState?.getParcelable<Parcelable>("state"))
+
+        }
+
         adapter.callback = this
-        list.adapter = adapter
+
+
         swipe_layout.setOnRefreshListener(this)
     }
 
@@ -131,14 +151,19 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     }
 
     override fun setData(data: Any?, typeData:Int) {
+
+        val visibleItem = (list.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+
         viewState.currentViewState = typeData
 
-        if(typeData >  ListViewState.SHOW_LIST_CITIES)
+        if(typeData > ListViewState.SHOW_LIST_CITIES)
             adapter.setData(data, ListAdapter.HOSTEL)
         else
             adapter.setData(data, ListAdapter.CITIES)
+
         list.adapter = adapter
 
+        (list.layoutManager as LinearLayoutManager).scrollToPosition(visibleItem)
     }
 
     override fun onNewViewStateInstance() {
@@ -169,4 +194,19 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
     override fun showError(errorText: String) {
         Toast.makeText(applicationContext,errorText,Toast.LENGTH_SHORT).show()
     }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.putParcelable("state",list.layoutManager.onSaveInstanceState())
+
+        val adapter = if(viewState.currentViewState == ListViewState.SHOW_LIST_CITIES){
+            list.adapter as ListAdapter<City>
+        } else {
+            list.adapter as ListAdapter<Hostel>
+        }
+
+        outState?.putParcelableArrayList("list", adapter.getData())
+
+        super.onSaveInstanceState(outState)
+    }
+
 }

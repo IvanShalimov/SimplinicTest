@@ -2,33 +2,24 @@ package com.example.ivan.simplinictest.mvp.gui
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.example.ivan.simplinictest.R
 import com.example.ivan.simplinictest.mvp.repository.model.City
 import com.example.ivan.simplinictest.mvp.repository.model.Hostel
 
-class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
+class ListAdapter<T>: RecyclerView.Adapter<ViewHolder>() {
 
-    companion object {
-        const val CITIES:Int = 0
-        const val HOSTEL:Int = 1
-    }
-
-    var list = ArrayList<Any>()
+    var list = ArrayList<T>()
     var callback:Callback? = null
-    private var typListData = CITIES
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val view =
             LayoutInflater.from(parent.context)
-                    .inflate( if (typListData == CITIES)
-                        R.layout.city_list_item else
-                        R.layout.hostel_list_item
+                    .inflate(R.layout.complex_adpter_item_layout
                             ,parent,
                             false)
-
-        view.tag = typListData
 
         return ViewHolder(view)
     }
@@ -39,7 +30,12 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if(typListData == CITIES){
+        if(list[position] is City){
+            //hide-show card
+            holder.hostelItem?.visibility = View.GONE
+            holder.cityItem?.visibility = View.VISIBLE
+
+            //setting need card
             val item =  list[position] as City
             holder.city?.text = item.getLabel()
             holder.peoples?.text = "${item.getCountPeople()}"
@@ -48,31 +44,30 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
                 callback?.onSelectItem(item)
             }
         } else {
+            //hide-show card
+            holder.hostelItem?.visibility = View.VISIBLE
+            holder.cityItem?.visibility = View.GONE
+
+            //setting need card
             val item =  list[position] as Hostel
             holder.hostel?.text = item.getLabel()
-            holder.rate?.rating =  item.getRate()!!.toFloat()
-            holder.about?.text =""
+            holder.rate?.rating = item.getRate()!!.toFloat()
+            holder.about?.text = ""
         }
     }
 
-
-    fun setData(parameter:Any?,type:Int){
-        list = parameter as ArrayList<Any>
-        changeData(type)
-    }
-
-    private fun changeData(type:Int){
-        typListData = if (type == CITIES){
-            CITIES
-        } else {
-            HOSTEL
-        }
+    fun setData(parameter:ArrayList<T>?,type:Int){
+        list = parameter as ArrayList<T>
 
         notifyDataSetChanged()
+    }
 
+    fun getData():ArrayList<T>{
+        return list
     }
 
     interface Callback{
         fun onSelectItem(city:City)
     }
+
 }
