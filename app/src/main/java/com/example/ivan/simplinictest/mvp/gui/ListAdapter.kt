@@ -21,14 +21,16 @@ class ListAdapter: RecyclerView.Adapter<ViewHolder>() {
     var typListData = CITIES
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View
-        if(typListData == CITIES){
-            view = LayoutInflater.from(parent.context).inflate(R.layout.city_list_item,parent,false)
-            view.tag = CITIES
-        } else {
-            view = LayoutInflater.from(parent.context).inflate(R.layout.hostel_list_item,parent,false)
-            view.tag = HOSTEL
-        }
+
+        val view =
+            LayoutInflater.from(parent.context)
+                    .inflate( if (typListData == CITIES)
+                        R.layout.city_list_item else
+                        R.layout.hostel_list_item
+                            ,parent,
+                            false)
+
+        view.tag = typListData
 
         return ViewHolder(view)
     }
