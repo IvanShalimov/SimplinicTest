@@ -2,10 +2,8 @@ package com.example.ivan.simplinictest.mvp.gui
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.os.PersistableBundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SwitchCompat
 import android.util.Log
 import android.view.Menu
@@ -20,6 +18,7 @@ import com.example.ivan.simplinictest.mvp.repository.model.Hostel
 import com.hannesdorfmann.mosby3.mvp.viewstate.MvpViewStateActivity
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.city_list_item.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState>(),
@@ -30,8 +29,8 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         toolbar.title = "${getString(R.string.app_name)}$string"
     }
 
-    private lateinit var adapter: ListAdapter<*>
     private lateinit var listSwitch:SwitchCompat
+    private var savedInstance:Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,24 +40,51 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         val layoutManager = LinearLayoutManager(this)
         list.layoutManager = layoutManager
 
-        adapter = ListAdapter()
-
-        if (savedInstanceState != null){
-            list.adapter = adapter
-        } else {
-            val listRestore = savedInstanceState?.getParcelableArrayList<City>("list")
-            adapter.setData(listRestore,0)
-
-            list.adapter = adapter
-
-            list.layoutManager.onRestoreInstanceState(savedInstanceState?.getParcelable<Parcelable>("state"))
-
-        }
-
-        adapter.callback = this
-
+        savedInstance = savedInstanceState
 
         swipe_layout.setOnRefreshListener(this)
+    }
+
+    override fun restoreData(){
+        if(viewState != null)
+        if(viewState.currentViewState == ListViewState.SHOW_LIST_CITIES){
+            val adapter = ListAdapter<City>()
+
+            if (savedInstance == null){
+                list.adapter = adapter
+                refreshData(viewState.currentViewState,true)
+            } else {
+                adapter.setDataFromBundleCity(savedInstance)
+                list.adapter = adapter
+
+                list.layoutManager.onRestoreInstanceState(savedInstance?.
+                        getParcelable<Parcelable>("state"))
+            }
+
+            adapter.callback = this
+        } else {
+            val adapter = ListAdapter<Hostel>()
+
+            if (savedInstance == null){
+                list.adapter = adapter
+                refreshData(viewState.currentViewState,true)
+            } else {
+                adapter.setDataFromBundleCity(savedInstance)
+                list.adapter = adapter
+
+                list.layoutManager.onRestoreInstanceState(savedInstance?.
+                        getParcelable<Parcelable>("state"))
+            }
+
+            adapter.callback = this
+        }
+
+        else {
+            val adapter = ListAdapter<City>()
+            list.adapter = adapter
+            adapter.callback = this
+            refreshData(ListViewState.SHOW_LIST_CITIES,true)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -156,12 +182,15 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
 
         viewState.currentViewState = typeData
 
-        if(typeData > ListViewState.SHOW_LIST_CITIES)
-            adapter.setData(data, ListAdapter.HOSTEL)
-        else
-            adapter.setData(data, ListAdapter.CITIES)
-
-        list.adapter = adapter
+        if(typeData > ListViewState.SHOW_LIST_CITIES){
+            val adapter = ListAdapter<City>()
+            adapter.setData(data as ArrayList<City>)
+            list.adapter = adapter
+        } else {
+            val adapter = ListAdapter<Hostel>()
+            adapter.setData(data as ArrayList<Hostel>)
+            list.adapter = adapter
+        }
 
         (list.layoutManager as LinearLayoutManager).scrollToPosition(visibleItem)
     }
@@ -178,11 +207,11 @@ class MainActivity : MvpViewStateActivity<ListView, ListPresenter, ListViewState
         return ListViewState()
     }
 
-    override fun refreshData(flag:Int, forceNetwork:Boolean) {
+    private fun refreshData(flag:Int, forceNetwork:Boolean) {
         when (flag) {
             ListViewState.SHOW_LIST_CITIES -> presenter.loadCity(forceNetwork)
             ListViewState.SHOW_LIST_HOSTEL -> presenter.loadHostel(forceNetwork)
-            ListViewState.SHOW_LIST_ALL_HOSTEL ->  presenter.loadAllHostel(forceNetwork)
+            ListViewState.SHOW_LIST_ALL_HOSTEL -> presenter.loadAllHostel(forceNetwork)
         }
     }
 

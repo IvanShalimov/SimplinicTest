@@ -1,5 +1,7 @@
 package com.example.ivan.simplinictest.mvp.gui
 
+import android.os.Bundle
+import android.os.Parcelable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import com.example.ivan.simplinictest.R
 import com.example.ivan.simplinictest.mvp.repository.model.City
 import com.example.ivan.simplinictest.mvp.repository.model.Hostel
+import kotlinx.android.synthetic.main.content_main.*
 
 class ListAdapter<T>: RecyclerView.Adapter<ViewHolder>() {
 
@@ -56,8 +59,8 @@ class ListAdapter<T>: RecyclerView.Adapter<ViewHolder>() {
         }
     }
 
-    fun setData(parameter:ArrayList<T>?,type:Int){
-        list = parameter as ArrayList<T>
+    fun setData(parameter:ArrayList<T>){
+        list = parameter
 
         notifyDataSetChanged()
     }
@@ -68,6 +71,18 @@ class ListAdapter<T>: RecyclerView.Adapter<ViewHolder>() {
 
     interface Callback{
         fun onSelectItem(city:City)
+    }
+
+    fun setDataFromBundleCity(bundle:Bundle?){
+        list = bundle?.getParcelableArrayList<City>("list") as ArrayList<T>
+
+        notifyDataSetChanged()
+    }
+
+    fun setDataFromBundleHostel(bundle:Bundle?){
+        list = bundle?.getParcelableArrayList<Hostel>("list") as ArrayList<T>
+
+        notifyDataSetChanged()
     }
 
 }

@@ -8,10 +8,10 @@ interface ListView: MvpView {
 
     fun lockScreen(flag:Boolean)
 
-    fun refreshData(flag:Int,forceNetwork:Boolean)
 
     fun setTitleCity(string:String?)
 
     fun showError(errorText:String)
 
+    fun restoreData()
 }

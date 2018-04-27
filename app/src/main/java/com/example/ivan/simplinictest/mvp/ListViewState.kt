@@ -31,19 +31,19 @@ class ListViewState: RestorableViewState<ListView> {
 
     override fun apply(view: ListView?, retained: Boolean) {
 
-
         when(currentViewState){
             SHOW_LIST_CITIES ->{
-                view?.refreshData(SHOW_LIST_CITIES,true)
+                view?.restoreData()
             }
             SHOW_LIST_HOSTEL ->{
                 view?.setTitleCity(":$cityName")
-                view?.refreshData(SHOW_LIST_HOSTEL,true)
+                view?.restoreData()
             }
             SHOW_LIST_ALL_HOSTEL ->{
-                view?.refreshData(SHOW_LIST_ALL_HOSTEL,true)
+                view?.restoreData()
             }
         }
+
     }
 
     override fun restoreInstanceState(`in`: Bundle?): RestorableViewState<ListView> {

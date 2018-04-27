@@ -12,7 +12,7 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.setDataFromBundle.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -30,8 +30,8 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:design:27.1.1'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.setDataFromBundle:runner:1.0.1'
+    androidTestImplementation 'com.android.support.setDataFromBundle.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
 
     implementation 'com.hannesdorfmann.mosby3:viewstate:3.1.0'
